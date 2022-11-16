@@ -24,7 +24,7 @@ class DB:
             self.profile = yaml.load(file, Loader=yaml.Loader)
 
             print(self.profile)
-            input("Press any key")
+
 
     def get_topics(self):
         return self.topics
@@ -44,14 +44,17 @@ class DB:
             self.base_weight = self.profile[self.topics[self.focus]]
             self.base_weight = self.base_weight if self.profile[self.topics[self.focus]] == len(self.df) else self.base_weight + [0] * (len(self.df) - len(self.base_weight))
         else : self.base_weight =  [0] * (len(self.df))
+        
+        
         for i, x in enumerate(self.base_weight):
-            self.rand_weight += [i] * max(1, 3-x)
+            self.rand_weight += [i] * max(0, 3-x)
+        if len(self.rand_weight) == 0: self.save_profile()
 
         # print(self.base_weight)
         # print(self.rand_weight)
 
     def gen_quest(self):
-        if self.rand_weight == 0 : self.set_topic(self.focus)
+        if len(self.rand_weight) == 0 : self.set_topic(self.focus)
         i = random.choice(self.rand_weight)
         self.rand_weight.pop(self.rand_weight.index(i))
         quest = {
@@ -66,7 +69,7 @@ class DB:
             quest['t'] = "write"
             return quest
         noise = []
-        while len(noise) < 4 and len(noise) < len(self.df) - 1:
+        while len(noise) < 3 and len(noise) < len(self.df) - 1:
             j = random.randint(0, len(self.df)-1)
             if j not in noise and i != j:
                 noise += [j]
@@ -80,7 +83,10 @@ class DB:
             self.profile[k] = kwargs[k]
 
     def save_profile(self):
-        self.profile[self.topics[self.focus]] = [ x - min(self.base_weight) for x in self.base_weight]
+        self.base_weight = [ min(x, 3) for x in self.base_weight]
+        if self.base_weight.count(3) > 9 / 10 * len(self.df): 
+            self.base_weight = [0] * len(self.df)
+        self.profile[self.topics[self.focus]] = self.base_weight
         with open(profile, 'w') as outfile:
             yaml.dump(self.profile, outfile, default_flow_style=False)
 

@@ -12,9 +12,6 @@ def check_write_ans(a,b):
         print("len 0")
         return False
     if len(a) != len(b): 
-        print("len wrong")
-        print("len a: ", len(a))
-        print("len b: ", len(b))
         return False
     for i, x in enumerate(a):
         if b[i] != x : 
