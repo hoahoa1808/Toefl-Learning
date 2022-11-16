@@ -5,14 +5,30 @@ import os
 clear = lambda: os.system('cls')
 import random
 
-random.seed(random.randint(50, 100))
-random.seed(random.randint(100, 1000))
-
+def check_write_ans(a,b):
+    a = str(a).strip().lower()
+    b = str(b).strip().lower()
+    if len(a) == 0 or len(b) == 0: 
+        print("len 0")
+        return False
+    if len(a) != len(b): 
+        print("len wrong")
+        print("len a: ", len(a))
+        print("len b: ", len(b))
+        return False
+    for i, x in enumerate(a):
+        if b[i] != x : 
+            print(b[i], " <> ", x)
+            return False
+    return True
+    
 def main():
     #INIT 
     log = Drawer()
     
     while True:
+        random.seed(random.randint(50, 100))
+        random.seed(random.randint(100, 1000))
         #MENU
         clear()
         log.main_menu(database.get_topics())
@@ -24,8 +40,8 @@ def main():
             assert 0, "nhap sai vcd cai id top pic"
 
 
-        try: num = int(input("What Number of question in the ensue test do u want ̣(default 1): ")) 
-        except: num = 1
+        try: num = int(input(f"What Number of question in the ensue test do u want ̣(default {database.get_len_topic()}): ")) 
+        except: num = database.get_len_topic()
 
 
         #statistic
@@ -56,7 +72,7 @@ def main():
                     flag = True
                     words += [quest['id']]
             else:
-                if true_ans == ur_ans.strip().lower(): 
+                if check_write_ans(quest["a"], ur_ans): 
                     correct += 1
                     database.base_weight[quest['id']] += 1
                     flag = True

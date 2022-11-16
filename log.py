@@ -1,7 +1,7 @@
 import sys
 from loguru import logger
 import random
-
+colors = ["red", "cyan", "white", "green", "blue", "yellow"] 
 class Drawer(object):
     def __init__(self) -> None:
         #formatlog
@@ -22,15 +22,19 @@ class Drawer(object):
 
 
     def main_menu(self, topic:list):
-        logger.remove()
-        logger.add(sys.stdout, format="\t\t\t\t\t <-----<yellow>{level}</yellow>----->\t \n<green>{message}</green> \n", level="MAINMENU", colorize=True)
         msg = ""
+        print("\t\t\t\t\t <-----MAIN MENU----->\t")
         for i, x in enumerate(topic): 
-            x = x + " "* (20-len(x)) if len(x) < 20 else x[:26]
-            msg += "\t{}. {} ".format(i+1,x)
-            if i+1 % 4 == 0: msg += "\n"
+            c = random.choice(colors)
+            x = x + " "* (20-len(x)) if len(x) < 20 else x[:20]
+            msg += "\t{}.{} ".format(i+1,x)
+            if (i+1) % 5 == 0 or i == len(topic)-1: 
+                logger.remove()
+                logger.add(sys.stdout, format= "\n<{}>".format(c) + "{message}"+ "</{}> \n".format(c,c), level="MAINMENU", colorize=True)
+                self.log("mainmenu", msg)
+                msg = ""
 
-        self.log("mainmenu", msg)
+        
 
 
     def quest(self, question, answer:str=None, noise:list=None, qtype="choice", pronouce=""):

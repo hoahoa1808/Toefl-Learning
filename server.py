@@ -32,6 +32,10 @@ class DB:
         if not self.df is None:
             return self.topics[self.focus]
         else: return "None"
+    def get_len_topic(self):
+        if not self.df is None:
+            return len(self.df)
+        else: return 0
 
     def set_topic(self, index):
         self.focus = index
@@ -58,7 +62,7 @@ class DB:
             "noise": [],
             "t": "choice"
         }
-        if random.choice([True, False, False]): 
+        if random.choice([False, True,  True, False, True, True]): 
             quest['t'] = "write"
             return quest
         noise = []
